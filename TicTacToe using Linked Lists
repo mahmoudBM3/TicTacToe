@@ -1,0 +1,743 @@
+
+#include <iostream>
+#include<stack>
+#include<time.h>
+using namespace std;
+
+
+#define     SIDE 3 // Length of the board
+#define     COMPUTER        1
+#define     HUMAN           2
+#define     COMPUTERMOVE   'O'
+#define     HUMANMOVE      'X'
+#define     SINGLE          1
+#define     MULTI           2
+#define     EASY            1
+#define     HARD            2
+
+
+
+int sizee = 0;
+int iturn = 1;
+bool draw = false;
+bool gameover();
+void instructionboard(int size);
+
+class node
+{
+private:
+public:
+    char data;
+    node* next;
+    node(char number) { next = NULL; data = number; }
+};
+class list
+{
+private:
+public:
+    node* head;
+    int size = 3;
+
+    list() { head = NULL; };
+    void pushatfront(char data);
+    void multiplayer();
+    void singleplayer_easy();
+    void singleplayer_hard();
+    void display_board();
+
+}list1,list2;
+
+void list::pushatfront(char data)
+{
+    node* new_node = new node(data);
+    new_node->next = head;
+    head = new_node;
+}
+void list::singleplayer_easy()
+{
+    int choice;
+    if (iturn == 1)
+    {
+    state1:
+        node* ptr;
+        ptr = list1.head;
+        cout << endl << "It's your turn, Select a number: ";
+        cin >> choice;
+        cout << endl;
+        if (choice <= (size*size) && choice > 0)
+        {
+
+            for (int i = 1; i < choice; i++)
+                ptr = ptr->next;
+            if (ptr->data != 'x' && ptr->data != 'o')
+                ptr->data = 'x';
+            else
+            {
+                cout << "It's already occupied please select another number: ";
+                goto state1;
+            }
+        }
+        else
+        {
+            cout << " Wrong number";
+            goto state1;
+        }
+        iturn = 2;
+    }
+    else if (iturn == 2)
+    {
+    state2:
+        node* ptr;
+        ptr = list1.head;
+        srand(time(0));
+        choice = 1 + (rand() % (size * size));
+
+        if (choice <= (size * size) && choice > 0)
+        {
+            for (int i = 1; i < choice; i++)
+                ptr = ptr->next;
+            if (ptr->data != 'x' && ptr->data != 'o')
+                ptr->data = 'o';
+            else
+            {
+                goto state2;
+            }
+        }
+        iturn = 1;
+    }
+    display_board();
+}
+void list::singleplayer_hard()
+{
+}
+void list::multiplayer()
+{
+    int choice;
+    if (iturn == 1)
+    {
+    state1:
+        node* ptr;
+        ptr = list1.head;
+        cout << endl << "It's player 1 turn select a number: ";
+        cin >> choice;
+        cout << endl;
+        if (choice <= (size * size) && choice > 0)
+        {
+
+            for (int i = 1; i < choice; i++)
+                ptr = ptr->next;
+            if (ptr->data != 'x' && ptr->data != 'o')
+                ptr->data = 'x';
+            else
+            {
+                cout << "It's already occupied please select another number: " << endl;
+                goto state1;
+            }
+        }
+        else
+        {
+            cout << "Wrong number ";
+            goto state1;
+        }
+        iturn = 2;
+    }
+    else if (iturn == 2)
+    {
+    state2:
+        node* ptr;
+        ptr = list1.head;
+        cout << endl << "Its' player 2 turn select a number: ";
+        cin >> choice;
+
+        if (choice <= (size * size) && choice > 0)
+        {
+            for (int i = 1; i < choice; i++)
+                ptr = ptr->next;
+            if (ptr->data != 'x' && ptr->data != 'o')
+                ptr->data = 'o';
+            else
+            {
+                cout << "It's already occupied please select another number: ";
+                goto state2;
+            }
+        }
+        else
+        {
+            cout << "Wrong number ";
+            goto state2;
+        }
+        iturn = 1;
+    }
+    display_board();
+}
+bool gameover()
+{
+    node* ptr = list1.head;
+    int comp1 = 0;
+    int comp2 = 0;
+    int comp3 = 0;
+    int comp4 = 0;
+    for (int j = 1; j <= 3; j++)
+    {
+        for (int i = 1; i < 3; i++)
+        {
+            if (ptr->data == ptr->next->data)
+            {
+                comp1++;
+                ptr = ptr->next;
+                if (comp1 >= 2)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                comp1 = 0;
+                break;
+            }
+
+        }
+        ptr = list1.head;
+        for (int i = 0; i < 3 * j; i++)
+        {
+            ptr = ptr->next;
+        }
+    }
+    ptr = list1.head;
+
+    for (int j = 1; j <= 3; j++)
+    {
+        ptr = list1.head;
+        for (int t = 1; t < j; t++)
+        {
+            ptr = ptr->next;
+        }
+        char ch = ptr->data;
+        for (int i = 0; i < 3 ; i++)
+        {
+            ptr = ptr->next;
+        }
+        for (int k = 1; k < 3; k++)
+        {
+            if (ch == ptr->data)
+            {
+                comp2++;
+                if (comp2 == 2)
+                {
+                    return false;
+                }
+                ch = ptr->data;
+                for (int i = 0; i < 3 ; i++)
+                {
+                    ptr = ptr->next;
+                }
+            }
+            else
+            {
+                comp2 = 0;
+                break;
+            }
+        }
+    }
+    ptr = list1.head;
+
+    for (int j = 1; j < 3; j++)
+    {
+        char ch = ptr->data;
+        for (int i = 0; i <= 3; i++ )
+        {
+            ptr = ptr->next;
+        }
+        if (ch == ptr->data)
+        {
+            comp3++;
+            if (comp3 == 2)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            comp3 = 0;
+            break;
+        }
+    }
+    ptr = list1.head;
+
+    for (int i = 1; i < 3; i++)
+    {
+        ptr = ptr->next;
+    }
+    for (int j = 1; j < 3; j++)
+    {
+        char ch = ptr->data;
+
+        for (int i = 1; i < 3; i++)
+        {
+            ptr = ptr->next;
+        }
+        if (ch == ptr->data)
+        {
+            comp4++;
+            if (comp4 == 2)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            comp4 = 0;
+            break;
+        }
+    }
+    ptr = list1.head;
+
+    for (int i = 0; i < 3 * 3; i++)
+    {
+
+        if (ptr->data != 'x' && ptr->data != 'o')
+        {
+            return true;
+        }
+        ptr = ptr->next;
+    }
+
+    draw = true;
+    return false;
+}
+void list::display_board()
+{
+    node* ptr2 = list1.head;
+    int count = 0;
+    for (int i = 0; i <= 24; i++)
+    {
+        cout << "-";
+    }
+    cout << endl << "|" << "       " << "|" << "       " << "|" << "       " << "|" << endl;
+    while (ptr2 != NULL)
+    {
+        cout << "|" << "   " << ptr2->data << "   ";
+        ptr2 = ptr2->next;
+        count++;
+        if (count == 3 || count == 6)
+        {
+            cout << "|" << endl;
+            cout << "|       " << "|" << "       " << "|" << "       " << "|" << endl;
+            for (int i = 0; i <= 24; i++)
+            {
+                cout << "-";
+            }
+            cout << endl << "|" << "       " << "|" << "       " << "|" << "       " << "|";
+            cout << endl;
+        }
+
+    }
+    cout << "|" << endl << "|" << "       " << "|" << "       " << "|" << "       " << "|" << endl;
+    for (int i = 0; i <= 24; i++)
+    {
+        cout << "-";
+    }
+    cout << endl;
+}
+void instructionboard(int size)
+{
+    node* ptr1 = list2.head;
+    for (int i = size * size; i > 0; i--)
+    {
+        list2.pushatfront(i);
+    }
+    int count = 0;
+    for (int i = 0; i <= size * 8; i++)
+    {
+        cout << "-";
+    }
+    cout << endl << "|";
+    for (int i = 0; i < size; i++)
+        cout << "       " << "|";
+    cout << endl;
+    while (ptr1 != NULL)
+    {
+        cout << "|" << "   " << ptr1->data << "   ";
+        ptr1 = ptr1->next;
+        count++;
+        if (count == size * 1 || count == size * 3)
+        {
+            cout << "|" << endl << "|";
+            for (int i = 0; i < size; i++)
+                cout << "       " << "|";
+            cout << endl;
+            for (int i = 0; i <= size * 8; i++)
+            {
+                cout << "-";
+            }
+            cout << endl << "|";
+            for (int i = 0; i < size; i++)
+                cout << "       " << "|";
+            cout << endl;
+        }
+
+    }
+
+cout << "|" << endl << "|";
+    for (int i = 0; i < size; i++)
+        cout << "       " << "|";
+    cout << endl;
+    for (int i = 0; i <= size * 8; i++)
+    {
+        cout << "-";
+    }
+}
+
+
+void showInstructions()
+{
+	cout<<"\nChoose a cell numbered from 1 to 9 as below and play\n\n";
+
+	cout<<"\t\t\t 1 | 2 | 3 \n";
+	cout<<"\t\t\t-----------\n";
+	cout<<"\t\t\t 4 | 5 | 6 \n";
+	cout<<"\t\t\t-----------\n";
+	cout<<"\t\t\t 7 | 8 | 9 \n\n";
+}
+
+
+void showBoard(char board[][SIDE])
+{
+
+    cout<<"\t\t\t" << board[0][0] << "  |  " << board[0][1] << "  |  " << board[0][2]  << "\n";
+	cout<<"\t\t\t" << "-------------"  << "\n";
+	cout<<"\t\t\t" << board[1][0] << "  |  " << board[1][1] << "  |  " << board[1][2]  << "\n";
+	cout<<"\t\t\t" << "-------------"  << "\n";
+	cout<<"\t\t\t" << board[2][0] << "  |  " << board[2][1] << "  |  " << board[2][2]  << "\n\n\n";
+}
+
+
+bool rowCrossed(char board[][SIDE])
+{
+	for (int i=0; i<SIDE; i++)
+	{
+		if (board[i][0] == board[i][1] &&
+			board[i][1] == board[i][2] &&
+			board[i][0] != ' ')
+			return (true);
+	}
+	return(false);
+}
+
+// A function that returns true if any of the column
+// is crossed with the same player's move
+bool columnCrossed(char board[][SIDE])
+{
+	for (int i=0; i<SIDE; i++)
+	{
+		if (board[0][i] == board[1][i] &&
+			board[1][i] == board[2][i] &&
+			board[0][i] != ' ')
+			return (true);
+	}
+	return(false);
+}
+
+// A function that returns true if any of the diagonal
+// is crossed with the same player's move
+bool diagonalCrossed(char board[][SIDE])
+{
+	if (board[0][0] == board[1][1] &&
+		board[1][1] == board[2][2] &&
+		board[0][0] != ' ')
+		return(true);
+
+	if (board[0][2] == board[1][1] &&
+		board[1][1] == board[2][0] &&
+		board[0][2] != ' ')
+		return(true);
+
+	return(false);
+}
+bool gameOver(char board[][SIDE])
+{
+	return(rowCrossed(board) || columnCrossed(board) || diagonalCrossed(board) );
+}
+
+// A function to declare the winner of the game
+void declareWinner(int whoseTurn)
+{
+	if (whoseTurn == COMPUTER)
+		cout<<"COMPUTER has won\n";
+	else
+		cout<<"HUMAN has won\n";
+}
+
+
+int minimax(char board[][SIDE], int depth, bool isAI)
+{
+	int score = 0;
+	int bestScore = 0;
+	if (gameOver(board) == true)
+	{
+		if (isAI == true)
+			return -1;
+		if (isAI == false)
+			return +1;
+	}
+	else
+	{
+		if(depth < 9)
+		{
+			if(isAI == true)
+			{
+				bestScore = -999;
+				for(int i=0; i<SIDE; i++)
+				{
+					for(int j=0; j<SIDE; j++)
+					{
+						if (board[i][j] == ' ')
+						{
+							board[i][j] = COMPUTERMOVE;
+							score = minimax(board, depth + 1, false);
+							board[i][j] = ' ';
+							if(score > bestScore)
+							{
+								bestScore = score;
+							}
+						}
+					}
+				}
+				return bestScore;
+			}
+			else
+			{
+				bestScore = 999;
+				for (int i = 0; i < SIDE; i++)
+				{
+					for (int j = 0; j < SIDE; j++)
+					{
+						if (board[i][j] == ' ')
+						{
+							board[i][j] = HUMANMOVE;
+							score = minimax(board, depth + 1, true);
+							board[i][j] = ' ';
+							if (score < bestScore)
+							{
+								bestScore = score;
+							}
+						}
+					}
+				}
+				return bestScore;
+			}
+		}
+		else
+		{
+			return 0;
+		}
+	}
+}
+
+// Function to calculate best move
+int bestMove(char board[][SIDE], int moveIndex)
+{
+	int x = -1, y = -1;
+	int score = 0, bestScore = -999;
+	for (int i = 0; i < SIDE; i++)
+	{
+		for (int j = 0; j < SIDE; j++)
+		{
+			if (board[i][j] == ' ')
+			{
+				board[i][j] = COMPUTERMOVE;
+				score = minimax(board, moveIndex+1, false);
+				board[i][j] = ' ';
+				if(score > bestScore)
+				{
+					bestScore = score;
+					x = i;
+					y = j;
+				}
+			}
+		}
+	}
+	return x*3+y;
+}
+
+void playTicTacToe(int whoseTurn)
+{
+    node* ptr = list1.head;
+    char board[3][3] = {'0'};
+    for (int j = 0; j < 3; j++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            board[j][i] = ptr->data;
+            ptr = ptr->next;
+        }
+    }
+
+	int moveIndex = 0, x = 0, y = 0;
+	showInstructions();
+
+	// Keep playing till the game is over or it is a draw
+	while (gameOver(board) == false && moveIndex != SIDE*SIDE)
+	{
+		int n;
+		if (whoseTurn == COMPUTER)
+		{
+			n = bestMove(board, moveIndex);
+			x = n / SIDE;
+			y = n % SIDE;
+			board[x][y] = COMPUTERMOVE;
+			cout<<"COMPUTER has put a " << COMPUTERMOVE << " in cell " << n+1 << "\n\n";
+			showBoard(board);
+			moveIndex ++;
+			whoseTurn = HUMAN;
+		}
+
+		else if (whoseTurn == HUMAN)
+		{
+			printf("You can insert in the following positions : ");
+			for(int i=0; i<SIDE; i++)
+				for (int j = 0; j < SIDE; j++)
+					if (board[i][j] == ' ')
+						cout << (i * 3 + j) + 1;
+			cout<<"\n\nEnter the position = ";
+			cin>>n;
+			n--;
+			x = n / SIDE;
+			y = n % SIDE;
+			if(board[x][y] == ' ' && n<9 && n>=0)
+			{
+				board[x][y] = HUMANMOVE;
+				cout<<"\nHUMAN has put a "<< HUMANMOVE << " in cell " <<  n+1 << "\n\n";
+				showBoard(board);
+				moveIndex ++;
+				whoseTurn = COMPUTER;
+			}
+			else if(board[x][y] != ' ' && n<9 && n>=0)
+			{
+				cout<<"\nPosition is occupied, select any one place from the available places\n\n";
+			}
+			else if(n<0 || n>8)
+			{
+				cout<<"Invalid position\n";
+			}
+		}
+	}
+
+	// If the game has drawn
+	if (gameOver(board) == false && moveIndex == SIDE * SIDE)
+		cout<<"It's a draw\n";
+	else
+	{
+		// Toggling the user to declare the actual winner
+		if (whoseTurn == COMPUTER)
+			whoseTurn = HUMAN;
+		else if (whoseTurn == HUMAN)
+			whoseTurn = COMPUTER;
+
+		declareWinner(whoseTurn);
+	}
+}
+
+
+int main()
+{
+    int selectedmode, type;
+
+    cout << "Hello! Welcome to TicTacToe Game! \n";
+
+    list1.pushatfront('9');
+    list1.pushatfront('8');
+    list1.pushatfront('7');
+    list1.pushatfront('6');
+    list1.pushatfront('5');
+    list1.pushatfront('4');
+    list1.pushatfront('3');
+    list1.pushatfront('2');
+    list1.pushatfront('1');
+ statezero:
+    cout << "Select 1 for Single Or 2 for Multi-Player: ";
+    cin >> selectedmode;
+    if (selectedmode == MULTI)
+    {
+        list1.display_board();
+        while (gameover())
+        {
+            list1.multiplayer();
+            gameover();
+        }
+        if (iturn == 1 && draw == false)
+        {
+            cout <<"\n" << "Congratulations! Player with 'O' has won the game";
+        }
+        else if (iturn == 2 && draw == false)
+        {
+            cout << "\n" << "Congratulations! Player with 'X' has won the game";
+        }
+        else if (!gameover())
+            cout << "\n" << "GAME DRAW ";
+    }
+    else if (selectedmode == SINGLE)
+    {
+    state3:
+        cout << "Select The Level Of Difficulty 1 for Easy or 2 for Hard: ";
+        cin >> type;
+        cin.ignore();
+
+        if (type == EASY)
+        {
+            list1.display_board();
+
+            while (gameover())
+            {
+                list1.singleplayer_easy();
+                gameover();
+            }
+            if (iturn == 1 && draw == false)
+            {
+                cout << "\n" << "Computer won, Good Luck Next Time!";
+            }
+            else if (iturn == 2 && draw == false)
+            {
+                cout << "\n" << "Congratulations! You won!";
+            }
+            else
+                cout << "GAME DRAW";
+        }
+        else if (type == HARD)
+        {
+            list1.pushatfront(' ');
+            list1.pushatfront(' ');
+            list1.pushatfront(' ');
+            list1.pushatfront(' ');
+            list1.pushatfront(' ');
+            list1.pushatfront(' ');
+            list1.pushatfront(' ');
+            list1.pushatfront(' ');
+            list1.pushatfront(' ');
+            char cont='y';
+            do {
+                char choice;
+                cout<<"Do you want to start first?(y/n) : ";
+                cin>>choice;
+
+                if(choice=='n')
+                    playTicTacToe(COMPUTER);
+                else if(choice=='y')
+                    playTicTacToe(HUMAN);
+                else
+                    cout<<"Invalid choice\n";
+
+               cout<<"\nDo you want to quit(y/n) : ";
+                    cin>>cont;
+            }
+            while(cont=='n');
+        }
+        else
+        {
+            cout << "Select 1 Or 2 Please " << "\n";
+            goto statezero;
+        }
+
+    }
+return 0;
+}
